@@ -5,8 +5,18 @@
   <title>PhiQu-M’s (Gelombang Bunyi)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link rel="icon" href="./Gelombang-Bunyi/foto/logo.png" type="image/png">
-  <link rel="apple-touch-icon" href="./Gelombang-Bunyi/foto/logo.png">
+  <link rel="icon" href="/Gelombang-Bunyi/foto/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/Gelombang-Bunyi/foto/logo.png">
+
+
+  <link rel="manifest" href="/manifest.json">
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js') // Gunakan path absolut '/' agar menunjuk ke root
+      .then(() => console.log("PhiQu PWA Registered from Subfolder"));
+  }
+</script>
+
 
   <style>
     * { box-sizing: border-box; }
@@ -315,13 +325,13 @@
 </div>
 
 <div id="splash">
-  <img src="./Gelombang-Bunyi/foto/logo.png" class="splash-logo">
+  <img src="/Gelombang-Bunyi/foto/logo.png" class="splash-logo">
   <h2 style="margin-top:20px; letter-spacing: 1px;">PhiQu MyModule’s</h2>
 </div>
 
 <header>
   <div class="header-left" onclick="openDownloadModal()">
-    <img src="./Gelombang-Bunyi/foto/logo.png" class="header-logo">
+    <img src="/Gelombang-Bunyi/foto/logo.png" class="header-logo">
     <div>
       <small style="opacity: 0.8;">PhiQu MyModule’s</small><br>
       <strong>Gelombang & Bunyi</strong>
@@ -716,7 +726,7 @@ pancasila khususnya mandiri, inovatif, bernalar kritis, kreatif dan bergotong ro
               <li>Setelah menonton vidio yang ditampilkan guru, peserta didik melakukan assesmen diagnostik awal berdasarkan vidio yang diberikan.</li>
                 <div style="margin-top: 10px; margin-left: 15px;">
                   <div style="display: inline-block; text-align: center; background: #f8fafc; padding: 8px; border: 1px dashed #cbd5e1; border-radius: 8px;">
-                    <img src="./Gelombang-Bunyi/foto/logo.png" alt="Scan Asesmen" style="width: 80px; height: 80px; display: block; margin: 0 auto;">
+                    <img src="/Gelombang-Bunyi/foto/logo.png" alt="Scan Asesmen" style="width: 80px; height: 80px; display: block; margin: 0 auto;">
                     <span style="font-size: 9px; color: #64748b; font-weight: bold; display: block; margin-top: 4px;">SCAN ASESMEN</span>
                   </div>
                 </div>
@@ -731,7 +741,7 @@ pancasila khususnya mandiri, inovatif, bernalar kritis, kreatif dan bergotong ro
                 <div style="display: flex; gap: 15px; margin-top: 12px; margin-left: 15px; flex-wrap: wrap;">
                   
                   <div style="text-align: center; background: #fff5f5; padding: 8px; border: 1px dashed #feb2b2; border-radius: 8px; width: 95px;">
-                    <img src="./Gelombang-Bunyi/foto/logo.png" alt="LKPD Rendah" style="width: 75px; height: 75px; display: block; margin: 0 auto;">
+                    <img src="/Gelombang-Bunyi/foto/logo.png" alt="LKPD Rendah" style="width: 75px; height: 75px; display: block; margin: 0 auto;">
                     <span style="font-size: 9px; color: #c53030; font-weight: bold; display: block; margin-top: 5px;">LKPD <br> (RENDAH)</span>
                   </div>
 
@@ -741,7 +751,7 @@ pancasila khususnya mandiri, inovatif, bernalar kritis, kreatif dan bergotong ro
                   </div>
 
                   <div style="text-align: center; background: #f0fff4; padding: 8px; border: 1px dashed #9ae6b4; border-radius: 8px; width: 95px;">
-                    <img src="./Gelombang-Bunyi/foto/logo.png" alt="LKPD Tinggi" style="width: 75px; height: 75px; display: block; margin: 0 auto;">
+                    <img src="/Gelombang-Bunyi/foto/logo.png" alt="LKPD Tinggi" style="width: 75px; height: 75px; display: block; margin: 0 auto;">
                     <span style="font-size: 9px; color: #276749; font-weight: bold; display: block; margin-top: 5px;">LKPD <br> (TINGGI)</span>
                   </div>
 
@@ -1442,9 +1452,9 @@ pancasila khususnya mandiri, inovatif, bernalar kritis, kreatif dan bergotong ro
     <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; text-align: center; background: #f8fafc;">
       <p style="font-size: 14px; font-weight: bold; margin-bottom: 15px; color: #334155;">Penilaian Sikap</p>
       <div style="background: white; padding: 10px; display: inline-block; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 15px;">
-        <img src="./Gelombang-Bunyi/foto/logo.png" alt="QR Sikap" style="width: 100px; height: 100px; display: block;">
+        <img src="/Gelombang-Bunyi/foto/logo.png" alt="QR Sikap" style="width: 100px; height: 100px; display: block;">
       </div>
-      <a href="./Gelombang-Bunyi/instrumen/penilaian-sikap.html" target="_blank" 
+      <a href="/Gelombang-Bunyi/instrumen/penilaian-sikap.html" target="_blank" 
          style="display: block; width: 100%; padding: 12px; background: #4d7c2c; color: white; text-decoration: none; border-radius: 8px; font-size: 12px; font-weight: bold;">
         Buka Instrumen
       </a>
@@ -1453,9 +1463,9 @@ pancasila khususnya mandiri, inovatif, bernalar kritis, kreatif dan bergotong ro
     <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; text-align: center; background: #f8fafc;">
       <p style="font-size: 14px; font-weight: bold; margin-bottom: 15px; color: #334155;">Observasi Diskusi</p>
       <div style="background: white; padding: 10px; display: inline-block; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 15px;">
-        <img src="./Gelombang-Bunyi/foto/logo.png" alt="QR Observasi" style="width: 100px; height: 100px; display: block;">
+        <img src="/Gelombang-Bunyi/foto/logo.png" alt="QR Observasi" style="width: 100px; height: 100px; display: block;">
       </div>
-      <a href="./Gelombang-Bunyi/instrumen/observasi-diskusi.html" target="_blank" 
+      <a href="/Gelombang-Bunyi/instrumen/observasi-diskusi.html" target="_blank" 
          style="display: block; width: 100%; padding: 12px; background: #4d7c2c; color: white; text-decoration: none; border-radius: 8px; font-size: 12px; font-weight: bold;">
         Buka Instrumen
       </a>
@@ -1464,9 +1474,9 @@ pancasila khususnya mandiri, inovatif, bernalar kritis, kreatif dan bergotong ro
     <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; text-align: center; background: #f8fafc;">
       <p style="font-size: 14px; font-weight: bold; margin-bottom: 15px; color: #334155;">Rubrik Presentasi</p>
       <div style="background: white; padding: 10px; display: inline-block; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 15px;">
-        <img src="./Gelombang-Bunyi/foto/logo.png" alt="QR Presentasi" style="width: 100px; height: 100px; display: block;">
+        <img src="/Gelombang-Bunyi/foto/logo.png" alt="QR Presentasi" style="width: 100px; height: 100px; display: block;">
       </div>
-      <a href="./Gelombang-Bunyi/instrumen/rubrik-presentasi.html" target="_blank" 
+      <a href="/Gelombang-Bunyi/instrumen/rubrik-presentasi.html" target="_blank" 
          style="display: block; width: 100%; padding: 12px; background: #4d7c2c; color: white; text-decoration: none; border-radius: 8px; font-size: 12px; font-weight: bold;">
         Buka Instrumen
       </a>
@@ -1491,9 +1501,9 @@ pancasila khususnya mandiri, inovatif, bernalar kritis, kreatif dan bergotong ro
   <div class="modal-content">
     <span class="close-btn" onclick="closeAbout()">×</span>
     <div class="logo-pair">
-      <img src="./Gelombang-Bunyi/foto/logo.png">
+      <img src="/Gelombang-Bunyi/foto/logo.png">
       <span class="phi-symbol">Φ</span>
-      <img src="./Gelombang-Bunyi/foto/logo.png">
+      <img src="/Gelombang-Bunyi/foto/logo.png">
     </div>
     <h3>Tentang Modul</h3>
     <p>Modul pembelajaran interaktif fisika berbasis web untuk SMA kelas XI dengan pendekatan TaRL.</p>
@@ -1536,7 +1546,7 @@ pancasila khususnya mandiri, inovatif, bernalar kritis, kreatif dan bergotong ro
 </div>
 
 <script>
-  const pdfPath = "./Gelombang-Bunyi/modul/Modul_Gelombang_dan_Bunyi.pdf";
+  const pdfPath = "/Gelombang-Bunyi/modul/Modul_Gelombang_dan_Bunyi.pdf";
 
   function isMobile() {
     return window.innerWidth < 992;
