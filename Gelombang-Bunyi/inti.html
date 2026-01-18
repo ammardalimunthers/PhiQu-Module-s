@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Inti Kegiatan | PhiQu MyModule’s</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="icon" href="/Gelombang-Bunyi/foto/logo.png">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #f4f6f8;
+      color: #0f172a;
+    }
+
+        /* ================= FULLSCREEN BACKGROUND LOGO ================= */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      /* Path gambar sesuai struktur Anda */
+      background-image: url('/Gelombang-Bunyi/foto/1.png');
+      background-repeat: no-repeat;
+      background-position: center 70%;
+      /* Mengatur besar logo (dikecilkan) */
+      background-size: 50vh;
+      /* Transparansi dikurangi agar lebih halus */
+      opacity: 0.5;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    header {
+      background: #020617;
+      color: white;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    header img {
+      width: 40px;
+    }
+
+    main {
+      max-width: 900px;
+      margin: auto;
+      padding: 24px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.85); /* opacity dikurangi */
+      border-radius: 14px;                 /* sedikit lebih kecil */
+      padding: 12px 14px;                  /* padding lebih kecil lagi */
+      box-shadow: 0 8px 20px rgba(0,0,0,.08); /* bayangan lebih halus */
+      margin-bottom: 20px;                 /* jarak antar card lebih rapat */
+      max-width: 600px;                    /* lebar lebih kecil lagi */
+      margin-left: auto;
+      margin-right: auto;
+      animation: fadeIn 1s ease-out;
+    }
+
+
+    h2 {
+      margin-top: 0;
+    }
+
+    /* ===== VIDEO SIZE CONTROL ===== */
+    .video-wrapper {
+      position: relative;
+      padding-top: 42%;          /* lebih kecil dari 56.25% */
+      max-width: 720px;          /* batasi lebar */
+      margin: 0 auto 20px;       /* center */
+      border-radius: 14px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .video-wrapper video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: black;
+    }
+
+
+    .video-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .primary-btn {
+      margin-top: 20px;
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: linear-gradient(135deg,#38bdf8,#0ea5e9);
+      color: white;
+      font-weight: 600;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .primary-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    /* MODAL */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(2,6,23,.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 24px;
+      border-radius: 16px;
+      max-width: 380px;
+      text-align: center;
+      animation: slideIn 0.5s ease-out;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <img src="/Gelombang-Bunyi/foto/logo.png">
+  <strong>Inti Kegiatan Pembelajaran</strong>
+</header>
+
+<main>
+
+  <div class="card">
+    <h2>🎥 Video Pembelajaran</h2>
+    <p>
+      Perhatikan video berikut untuk memahami konsep dasar
+      <b>Gelombang dan Bunyi</b>.
+    </p>
+
+    <div class="video-wrapper">
+      <video controls preload="metadata">
+        <source src="/Gelombang-Bunyi/foto/vidio1.mp4" type="video/mp4">
+        Browser Anda tidak mendukung pemutaran video.
+      </video>
+    </div>
+
+    <button class="primary-btn" onclick="goToDiagnostic()">
+      Mulai Diagnostik Awal
+    </button>
+  </div>
+
+</main>
+
+<!-- MODAL MOBILE -->
+<div id="mobileModal" class="modal">
+  <div class="modal-content">
+    <h3>⚠️ Perangkat Tidak Didukung</h3>
+    <p>
+      Bagian inti pembelajaran hanya dapat
+      diakses melalui <b>laptop / komputer</b>.
+    </p>
+  </div>
+</div>
+
+<script>
+  function isMobile(){
+    return window.innerWidth < 992;
+  }
+
+  // Saat halaman dibuka
+  window.onload = () => {
+    if (isMobile()) {
+      document.getElementById("mobileModal").style.display = "flex";
+    } else {
+      document.getElementById("introModal").style.display = "flex";
+    }
+  }
+
+  function closeIntro(){
+    document.getElementById("introModal").style.display = "none";
+  }
+
+  function goToDiagnostic(){
+    window.location.href = 'diagnostik.html';
+  }
+</script>
+
+</body>
+</html>

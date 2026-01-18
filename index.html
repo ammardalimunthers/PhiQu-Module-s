@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhiQu Module's</title>
+    <link rel="icon" href="/Gelombang-Bunyi/foto/logo.png" type="image/png">
+    <link rel="apple-touch-icon" href="/Gelombang-Bunyi/foto/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #ffd700;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        /* --- Global Reset --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+
+        /* --- Header Section --- */
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            padding: 50px 20px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        @media (min-width: 480px) {
+            header { flex-direction: row; gap: 20px; }
+        }
+
+        .logo-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo {
+            width: 65px;
+            height: auto;
+            z-index: 2;
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .logo-glow {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            filter: blur(25px);
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: -1px;
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- List & Grid Container --- */
+        .list-container {
+            width: 90%;
+            max-width: 850px; /* Ukuran maksimal diperlebar sedikit agar nyaman di desktop */
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: 1fr; /* Default 1 kolom untuk mobile */
+            gap: 20px;
+        }
+
+        /* Responsif Tablet & Desktop: 2 Kolom */
+        @media (min-width: 640px) {
+            ul {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* --- Card Style --- */
+        li {
+            opacity: 0;
+            animation: slideIn 0.5s forwards;
+        }
+
+        /* Delay animasi tiap card */
+        li:nth-child(1) { animation-delay: 0.1s; }
+        li:nth-child(2) { animation-delay: 0.2s; }
+        li:nth-child(3) { animation-delay: 0.3s; }
+        li:nth-child(4) { animation-delay: 0.4s; }
+
+        a {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            padding: 28px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            color: var(--text-main);
+            text-decoration: none;
+            backdrop-filter: blur(12px);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            box-sizing: border-box; /* Memastikan padding tidak merusak lebar */
+        }
+
+        a:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent);
+            box-shadow: 0 15px 35px -12px rgba(0, 0, 0, 0.6);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-top: auto; /* Mendorong footer ke bawah card */
+        }
+
+        .arrow {
+            margin-left: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        a:hover .arrow {
+            transform: translateX(6px);
+        }
+
+        /* --- Animations --- */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.4); opacity: 0.5; }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <div class="logo-glow"></div>
+            <img src="/Gelombang-Bunyi/foto/logo.png" alt="Logo" class="logo">
+        </div>
+        <h1>PhiQu Module's</h1>
+    </header>
+
+    <div class="list-container">
+        <ul>
+            <li>
+                <a href="/gelombang-bunyi/index.html">
+                    <div>
+                        <div class="card-title">Gelombang Bunyi</div>
+                        <div class="card-desc">Pelajari konsep dasar, frekuensi, dan resonansi bunyi secara mendalam melalui modul interaktif.</div>
+                    </div>
+                    <div class="card-footer">
+                        Buka Modul <span class="arrow">➜</span>
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <div>
+                        <div class="card-title">Optika Geometris</div>
+                        <div class="card-desc">Eksplorasi pembiasan cahaya, cermin, dan lensa dengan simulasi laboratorium virtual.</div>
+                    </div>
+                    <div class="card-footer">
+                        Segera Hadir <span class="arrow">➜</span>
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <div>
+                        <div class="card-title">Termodinamika</div>
+                        <div class="card-desc">Memahami hukum energi, kalor, dan perubahan suhu dalam berbagai sistem fisik.</div>
+                    </div>
+                    <div class="card-footer">
+                        Segera Hadir <span class="arrow">➜</span>
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <div>
+                        <div class="card-title">Listrik Statis</div>
+                        <div class="card-desc">Analisis muatan listrik, gaya Coulomb, dan fenomena medan listrik di kehidupan sehari-hari.</div>
+                    </div>
+                    <div class="card-footer">
+                        Segera Hadir <span class="arrow">➜</span>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+</body>
+</html>
