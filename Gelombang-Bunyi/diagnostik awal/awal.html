@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tes Diagnostik - PhiQu</title>
+    <link rel="icon" href="../foto/logo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #4d7c2c;
+            --secondary: #fbbf24;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --danger: #ef4444;
+        }
+
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-top: 8px solid var(--primary); position: relative; }
+
+        /* Timer Style */
+        .timer-bar { position: sticky; top: 0; background: white; z-index: 100; padding: 10px 0; border-bottom: 2px solid #eee; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        #timer { font-weight: bold; color: var(--danger); font-size: 18px; }
+
+        .header { text-align: center; margin-bottom: 30px; }
+        .header img { width: 70px; }
+        .header h1 { color: var(--primary); margin: 5px 0; font-size: 22px; }
+
+        .question-card { margin-bottom: 25px; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; }
+        .question-text { font-weight: 600; margin-bottom: 15px; display: block; }
+
+        .options { display: flex; flex-direction: column; gap: 8px; }
+        .option { display: flex; align-items: center; padding: 10px 15px; border: 1px solid #f1f5f9; border-radius: 8px; cursor: pointer; font-size: 14px; transition: 0.2s; }
+        .option:hover { background: #f8fafc; }
+        .option input { margin-right: 12px; accent-color: var(--primary); }
+
+        .btn-submit { display: block; width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        
+        #result-area { display: none; text-align: center; }
+        .recommendation-box { background: #fef3c7; padding: 20px; border-radius: 12px; margin: 20px 0; border: 2px dashed var(--secondary); }
+        
+        .ct-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .ct-card { background: #f8fafc; padding: 15px; border-radius: 10px; border-left: 5px solid var(--secondary); text-align: left; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="timer-bar">
+        <span>Sisa Waktu:</span>
+        <span id="timer">05:00</span>
+    </div>
+
+    <div class="header">
+        <img src="../foto/logo.png" alt="Logo">
+        <h1>Kuis Detektif Bunyi</h1>
+        <p>Hasil tes ini akan menentukan jalur belajar (LKPD) kamu!</p>
+    </div>
+
+    <form id="quiz-form">
+        <div id="quiz-container"></div>
+        <button type="button" class="btn-submit" onclick="calculateResult()">Selesai & Lihat Rekomendasi</button>
+    </form>
+
+    <div id="result-area">
+        <h2 style="color: var(--primary)">Hasil Analisis Kamu</h2>
+        <p id="total-score" style="font-size: 24px; font-weight: bold;"></p>
+        
+        <div class="recommendation-box">
+            <h3 style="margin: 0;">Rekomendasi Belajar:</h3>
+            <p id="rekomendasi-teks" style="font-weight: 600; font-size: 18px; color: #92400e;"></p>
+        </div>
+
+        <div class="ct-grid">
+            <div class="ct-card"><h4>Dekomposisi</h4><p id="sc-dekomposisi">0%</p></div>
+            <div class="ct-card"><h4>Pengenalan Pola</h4><p id="sc-pola">0%</p></div>
+            <div class="ct-card"><h4>Abstraksi</h4><p id="sc-abstraksi">0%</p></div>
+            <div class="ct-card"><h4>Algoritma</h4><p id="sc-algoritma">0%</p></div>
+        </div>
+        
+        <button id="btn-next" class="btn-submit" style="background: var(--secondary); color: black; margin-top: 25px;">Mulai Pengerjaan LKPD</button>
+    </div>
+</div>
+
+<script>
+    const totalTime = 300; // 5 Menit dalam detik
+    let timeLeft = totalTime;
+    let timerInterval;
+
+    const questions = [
+        { q: "Jika kamu memukul meja kayu, sendok besi, dan air di ember, benda mana yang suaranya paling cepat terdengar?", options: ["Udara", "Air di ember", "Sendok besi", "Semuanya lambat", "Tidak ada suara"], ans: 2, cat: "pola" },
+        { q: "Untuk tahu kenapa bunyi di pantai lebih cepat dari di gunung, apa yang paling penting kita cek?", options: ["Warna pasir", "Suhu udara", "Jumlah turis", "Nama gunungnya", "Jenis ikannya"], ans: 1, cat: "dekomposisi" },
+        { q: "Saat menjauh dari sumber suara, suaranya makin pelan. Ini karena energinya...", options: ["Hilang dicuri", "Berubah jadi air", "Menyebar luas", "Berhenti jalan", "Masuk ke tanah"], ans: 2, cat: "abstraksi" },
+        { q: "Langkah pertama yang benar jika ingin menghitung kecepatan bunyi adalah...", options: ["Hitung waktu", "Ukur jarak", "Makan dulu", "Langsung bagi", "Tidur dulu"], ans: 1, cat: "algoritma" },
+        { q: "Kenapa di luar angkasa astronaut pakai radio untuk berkomunikasi? Karena di sana...", options: ["Terlalu gelap", "Tidak ada udara", "Sangat dingin", "Banyak bintang", "Gravitasi kuat"], ans: 1, cat: "dekomposisi" },
+        { q: "Kalau suhu makin panas, bunyi akan semakin...", options: ["Cepat", "Lambat", "Berhenti", "Mundur", "Pelan sekali"], ans: 0, cat: "pola" },
+        { q: "Mobil ambulans lewat depanmu, nadanya berubah dari tinggi ke rendah. Hal ini disebut...", options: ["Gema", "Efek Doppler", "Bunyi diam", "Getaran pelan", "Suara mesin"], ans: 1, cat: "pola" },
+        { q: "Agar perhitungan bunyi lebih simpel, gangguan angin kecil sebaiknya...", options: ["Dihitung detail", "Diabaikan saja", "Ditambah-tambah", "Dikali dua", "Dilaporkan"], ans: 1, cat: "abstraksi" },
+        { q: "Urutan yang pas: (1) Bunyi dibuat, (2) Bunyi merambat, (3) Telinga dengar. Ini adalah...", options: ["1-3-2", "3-2-1", "1-2-3", "2-1-3", "2-3-1"], ans: 2, cat: "algoritma" },
+        { q: "Membagi masalah besar menjadi bagian kecil (seperti cek suhu, medium, jarak) disebut...", options: ["Tidur", "Dekomposisi", "Penyebaran", "Pengulangan", "Penyaringan"], ans: 1, cat: "dekomposisi" }
+    ];
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            let mins = Math.floor(timeLeft / 60);
+            let secs = timeLeft % 60;
+            document.getElementById('timer').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            if (timeLeft <= 0) calculateResult();
+        }, 1000);
+    }
+
+    function loadQuiz() {
+        const container = document.getElementById('quiz-container');
+        questions.forEach((item, index) => {
+            let optionsHtml = item.options.map((opt, i) => `
+                <label class="option">
+                    <input type="radio" name="q${index}" value="${i}"> ${String.fromCharCode(97 + i)}. ${opt}
+                </label>
+            `).join('');
+            container.innerHTML += `<div class="question-card"><span class="question-text">${index + 1}. ${item.q}</span><div class="options">${optionsHtml}</div></div>`;
+        });
+        startTimer();
+    }
+
+    function calculateResult() {
+        clearInterval(timerInterval);
+        let scores = { dekomposisi: 0, pola: 0, abstraksi: 0, algoritma: 0, total: 0 };
+        let counts = { dekomposisi: 3, pola: 3, abstraksi: 2, algoritma: 2 };
+
+        questions.forEach((item, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            if (selected && parseInt(selected.value) === item.ans) {
+                scores[item.cat]++;
+                scores.total++;
+            }
+        });
+
+        // HITUNG NILAI AKHIR (Jawaban + Bonus Waktu)
+        // Nilai maksimal jawaban = 100. Bonus waktu = sisa detik / 10 (maks 30 poin)
+        let baseScore = scores.total * 10;
+        let timeBonus = Math.floor(timeLeft / 2); 
+        let finalScore = baseScore + timeBonus;
+
+        document.getElementById('quiz-form').style.display = 'none';
+        document.getElementById('result-area').style.display = 'block';
+        document.querySelector('.timer-bar').style.display = 'none';
+
+        // Penentuan Kelompok & LKPD
+        let level = "";
+        let targetFile = "";
+        if (finalScore >= 80) {
+            level = "Kelompok Tinggi (Mahir)";
+            targetFile = "lkpd-tinggi.html";
+        } else if (finalScore >= 50) {
+            level = "Kelompok Sedang (Cakap)";
+            targetFile = "lkpd-sedang.html";
+        } else {
+            level = "Kelompok Rendah (Dasar)";
+            targetFile = "lkpd-rendah.html";
+        }
+
+        document.getElementById('total-score').innerText = `Skor Akhir: ${finalScore}`;
+        document.getElementById('rekomendasi-teks').innerText = `Kamu masuk ke ${level}`;
+        document.getElementById('btn-next').onclick = () => window.location.href = targetFile;
+
+        // Tampilkan indikator CT
+        document.getElementById('sc-dekomposisi').innerText = Math.round((scores.dekomposisi / counts.dekomposisi) * 100) + "%";
+        document.getElementById('sc-pola').innerText = Math.round((scores.pola / counts.pola) * 100) + "%";
+        document.getElementById('sc-abstraksi').innerText = Math.round((scores.abstraksi / counts.abstraksi) * 100) + "%";
+        document.getElementById('sc-algoritma').innerText = Math.round((scores.algoritma / counts.algoritma) * 100) + "%";
+        
+        window.scrollTo(0, 0);
+    }
+
+    window.onload = loadQuiz;
+</script>
+
+</body>
+</html>
