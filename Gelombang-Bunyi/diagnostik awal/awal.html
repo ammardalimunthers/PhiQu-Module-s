@@ -55,7 +55,7 @@
 
     <div class="header">
         <img src="../foto/logo.png" alt="Logo">
-        <h1>Kuis Detektif Bunyi</h1>
+        <h1>Tes Awal-Bunyi</h1>
         <p>Hasil tes ini akan menentukan jalur belajar (LKPD) kamu!</p>
     </div>
 
@@ -141,7 +141,7 @@
         // HITUNG NILAI AKHIR (Jawaban + Bonus Waktu)
         // Nilai maksimal jawaban = 100. Bonus waktu = sisa detik / 10 (maks 30 poin)
         let baseScore = scores.total * 10;
-        let timeBonus = Math.floor(timeLeft / 2); 
+        let timeBonus = Math.floor(timeLeft / 250); 
         let finalScore = baseScore + timeBonus;
 
         document.getElementById('quiz-form').style.display = 'none';
