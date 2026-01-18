@@ -11,12 +11,31 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
-
     <style>
-        /* Style tetap sama seperti sebelumnya */
         body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; margin: 0; padding: 20px; }
         .container { max-width: 1000px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-top: 6px solid #4d7c2c; }
-        h2 { color: #4d7c2c; text-align: center; margin-bottom: 5px; }
+        
+        /* Style untuk Header Logo dan Judul Sejajar */
+        .header-banner {
+            display: flex;
+            align-items: center;
+            position: relative;
+            margin-bottom: 20px;
+            min-height: 60px;
+        }
+        .instrumen-logo {
+            position: absolute;
+            left: 0;
+            width: 60px;
+            height: auto;
+        }
+        h2 { 
+            flex: 1;
+            color: #4d7c2c; 
+            text-align: center; 
+            margin: 0; 
+        }
+
         .sub-title { text-align: center; color: #64748b; font-size: 14px; margin-bottom: 25px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th { background: #fbbf24; color: #000; padding: 12px; border: 1px solid #e2e8f0; font-size: 13px; }
@@ -33,7 +52,11 @@
 <body>
 
 <div class="container">
-    <h2>INSTRUMEN OBSERVASI DISKUSI</h2>
+    <div class="header-banner">
+        <img src="../foto/logo.png" alt="Logo" class="instrumen-logo">
+        <h2>INSTRUMEN OBSERVASI DISKUSI</h2>
+    </div>
+    
     <div class="sub-title">Aspek: (A) Kerjasama, (B) Keaktifan, (C) Keberanian, (D) Peduli Lingkungan</div>
     
     <table id="tabelDiskusi">
@@ -107,27 +130,43 @@
     }
 
     async function prosesWA() {
-        if (dataDiskusi.length === 0) return alert("Data kosong!");
+    if (dataDiskusi.length === 0) return alert("Data kosong!");
+    const doc = new jsPDF();
+    
+    // Logo
+    const img = new Image();
+    img.src = '../foto/logo.png';
+    doc.addImage(img, 'PNG', 14, 10, 18, 18); 
 
-        // 1. Generate PDF
-        const doc = new jsPDF();
-        doc.text("REKAP OBSERVASI DISKUSI - Gelombang Bunyi", 14, 15);
-        
-        const rows = dataDiskusi.map((s, i) => {
-            const total = parseInt(s.a) + parseInt(s.b) + parseInt(s.c) + parseInt(s.d);
-            return [i + 1, s.nama, s.a, s.b, s.c, s.d, total, Math.round((total / 12) * 100)];
-        });
+    // Judul & Info Skala
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("REKAP OBSERVASI DISKUSI - Gelombang Bunyi", 105, 18, { align: "center" });
+    
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "italic");
+    doc.text("Skala Penilaian: 3 (Sangat Aktif/Baik), 2 (Cukup), 1 (Kurang)", 105, 25, { align: "center" });
+    doc.text("Aspek: (A) Kerjasama, (B) Keaktifan, (C) Keberanian, (D) Peduli Lingkungan", 105, 30, { align: "center" });
 
-        doc.autoTable({
-            head: [['No', 'Nama Siswa', 'A', 'B', 'C', 'D', 'Skor', 'Nilai']],
-            body: rows,
-            startY: 20,
-            theme: 'grid'
-        });
+    // Garis pemisah
+    doc.line(14, 33, 196, 33);
 
-        const fileName = `Hasil_Diskusi_${new Date().getTime()}.pdf`;
-        doc.save(fileName);
-    }
+    // Render Tabel
+    const rows = dataDiskusi.map((s, i) => {
+        const total = parseInt(s.a) + parseInt(s.b) + parseInt(s.c) + parseInt(s.d);
+        return [i + 1, s.nama, s.a, s.b, s.c, s.d, total, Math.round((total / 12) * 100)];
+    });
+
+    doc.autoTable({
+        head: [['No', 'Nama Siswa', 'A', 'B', 'C', 'D', 'Skor', 'Nilai']],
+        body: rows,
+        startY: 38,
+        theme: 'grid',
+        headStyles: { fillColor: [77, 124, 44] }
+    });
+
+    doc.save(`Hasil_Diskusi_${Date.now()}.pdf`);
+}
 
     if(dataDiskusi.length === 0) tambahSiswa();
     renderTabel();

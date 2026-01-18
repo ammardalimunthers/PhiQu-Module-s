@@ -9,11 +9,31 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
-
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #fdfdfd; margin: 0; padding: 20px; }
         .container { max-width: 1100px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 6px solid #4d7c2c; }
-        h2 { color: #4d7c2c; text-align: center; margin-bottom: 5px; }
+        
+        /* Style Header Logo & Judul Sejajar */
+        .header-banner {
+            display: flex;
+            align-items: center;
+            position: relative;
+            margin-bottom: 10px;
+            min-height: 60px;
+        }
+        .instrumen-logo {
+            position: absolute;
+            left: 0;
+            width: 60px;
+            height: auto;
+        }
+        h2 { 
+            flex: 1;
+            color: #4d7c2c; 
+            text-align: center; 
+            margin: 0; 
+        }
+
         .sub-title { text-align: center; color: #64748b; font-size: 14px; margin-bottom: 25px; }
         
         .table-wrapper { overflow-x: auto; }
@@ -37,7 +57,11 @@
 <body>
 
 <div class="container">
-    <h2>RUBRIK PENILAIAN PRESENTASI</h2>
+    <div class="header-banner">
+        <img src="../foto/logo.png" alt="Logo" class="instrumen-logo">
+        <h2>RUBRIK PENILAIAN PRESENTASI</h2>
+    </div>
+
     <div class="sub-title">Materi: Gelombang Bunyi (Skala Skor 1 - 4)</div>
     
     <div class="table-wrapper">
@@ -135,31 +159,41 @@
     }
 
     function generatePDF() {
-        if (dataPresentasi.length === 0) return alert("Data kosong!");
+    if (dataPresentasi.length === 0) return alert("Data kosong!");
+    const doc = new jsPDF();
 
-        const doc = new jsPDF();
-        doc.setFontSize(16);
-        doc.text("LAPORAN PENILAIAN PRESENTASI", 105, 15, { align: "center" });
-        doc.setFontSize(11);
-        doc.text("Materi: Gelombang Bunyi", 14, 25);
-        doc.text(`Dicetak pada: ${new Date().toLocaleString('id-ID')}`, 14, 30);
+    const img = new Image();
+    img.src = '../foto/logo.png';
+    doc.addImage(img, 'PNG', 14, 10, 18, 18);
 
-        const tableData = dataPresentasi.map((s, i) => {
-            let total = parseInt(s.a) + parseInt(s.b) + parseInt(s.c) + parseInt(s.d) + parseInt(s.e);
-            let nilai = Math.round((total / 20) * 100);
-            return [i + 1, s.nama, s.a, s.b, s.c, s.d, s.e, total, nilai];
-        });
+    doc.setFontSize(15);
+    doc.setFont("helvetica", "bold");
+    doc.text("LAPORAN PENILAIAN PRESENTASI", 105, 18, { align: "center" });
+    
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "italic");
+    // Menambahkan Informasi Skala & Aspek
+    doc.text("Skala: 4 (Sangat Baik), 3 (Baik), 2 (Cukup), 1 (Kurang)", 105, 24, { align: "center" });
+    doc.text("Aspek: Info (Akurasi), Gaya (Komunikasi), Bantah (Respon), Topik (Penguasaan), Etika (Sikap)", 105, 28, { align: "center" });
 
-        doc.autoTable({
-            head: [['No', 'Nama Siswa', 'Info', 'Gaya', 'Bantah', 'Topik', 'Etika', 'Total', 'Nilai']],
-            body: tableData,
-            startY: 40,
-            styles: { halign: 'center', fontSize: 9 },
-            headStyles: { fillColor: [77, 124, 44] }
-        });
+    doc.line(14, 32, 196, 32);
 
-        doc.save(`Hasil_Presentasi_${Date.now()}.pdf`);
-    }
+    const tableData = dataPresentasi.map((s, i) => {
+        let total = parseInt(s.a) + parseInt(s.b) + parseInt(s.c) + parseInt(s.d) + parseInt(s.e);
+        let nilai = Math.round((total / 20) * 100);
+        return [i + 1, s.nama, s.a, s.b, s.c, s.d, s.e, total, nilai];
+    });
+
+    doc.autoTable({
+        head: [['No', 'Nama Siswa', 'Info', 'Gaya', 'Bantah', 'Topik', 'Etika', 'Total', 'Nilai']],
+        body: tableData,
+        startY: 36,
+        styles: { halign: 'center', fontSize: 9 },
+        headStyles: { fillColor: [77, 124, 44] }
+    });
+
+    doc.save(`Hasil_Presentasi_${Date.now()}.pdf`);
+}
 
     if(dataPresentasi.length === 0) tambahSiswa();
     renderTabel();
