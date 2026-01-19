@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>PhiQu - Mastering Sound Waves & Coding</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="foto/logo.png">
+  <style>
+    :root {
+      --primary: #002d57;
+      --accent: #10b981;
+      --bg: #0f172a;
+      --card-white: #ffffff;
+      --code-bg: #1e1e1e;
+    }
+    body {
+      margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg); color: #334155; height: 100vh; overflow: hidden;
+      user-select: none;
+    }
+
+    /* Navigasi */
+    .nav-hotspot {
+      position: fixed; top: 0; bottom: 0; width: 8%; z-index: 1000;
+      cursor: pointer; transition: 0.3s;
+    }
+    .left-zone { left: 0; }
+    .right-zone { right: 0; }
+    .nav-hotspot:hover { background: rgba(255,255,255,0.05); }
+
+    .progress-container {
+      position: fixed; top: 0; width: 100%; height: 5px; background: rgba(255,255,255,0.1); z-index: 1001;
+    }
+    .progress-bar { height: 100%; background: var(--accent); width: 0%; transition: 0.3s; }
+
+    /* Slide Engine */
+    .viewport { height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .slide {
+      width: 95%; max-width: 1250px; height: 88vh; background: var(--card-white);
+      border-radius: 20px; padding: 40px; display: none; box-sizing: border-box;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5); overflow-y: auto;
+    }
+    .slide.active { display: block; animation: slideIn 0.5s ease; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: start; }
+    h1, h2 { color: var(--primary); margin-top: 0; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; }
+    .theory-box { background: #f8fafc; padding: 20px; border-radius: 12px; border-left: 6px solid var(--primary); margin-bottom: 15px; }
+    .example-box { background: #fffbeb; padding: 20px; border-radius: 12px; border: 1px solid #fde68a; margin-top: 10px; }
+    
+    .formula { font-size: 22px; text-align: center; color: var(--primary); font-weight: bold; padding: 10px; background: #e0f2fe; border-radius: 8px; margin: 10px 0; }
+
+    /* Editor & Simulation */
+    #editor-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; height: 350px; margin-top: 15px; }
+    #code-input { 
+      background: var(--code-bg); color: #d4d4d4; font-family: 'Consolas', monospace; 
+      padding: 15px; border-radius: 8px; border: none; resize: none; width: 100%; font-size: 14px;
+    }
+    #simulation-output { 
+      background: #f1f5f9; border-radius: 8px; display: flex; 
+      align-items: center; justify-content: center; position: relative; overflow: hidden; border: 2px solid #e2e8f0;
+    }
+    .ambulance { font-size: 50px; position: absolute; left: 10px; z-index: 5; }
+    .listener { font-size: 40px; position: absolute; right: 50px; }
+    .sound-wave { 
+      position: absolute; border: 2px solid var(--primary); border-radius: 50%; 
+      opacity: 0; pointer-events: none;
+    }
+
+    @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes ripple { from { width: 0; height: 0; opacity: 0.8; } to { width: 400px; height: 400px; opacity: 0; } }
+
+    .btn-run { padding: 12px 25px; background: var(--accent); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+    .btn-run:hover { background: #059669; transform: scale(1.02); }
+    .btn-stop { padding: 12px 25px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+<div class="nav-hotspot left-zone" onclick="moveSlide(-1)"></div>
+<div class="nav-hotspot right-zone" onclick="moveSlide(1)"></div>
+
+<div class="viewport">
+
+  <div class="slide active">
+    <h1>🎯 Tujuan Pembelajaran: Gelombang Bunyi</h1>
+    <div class="grid-2">
+      <div class="theory-box">
+        <p>Setelah mengikuti pertemuan ini, diharapkan siswa dapat:</p>
+        <ul>
+          <li>Menganalisis perambatan bunyi dan variabel yang memengaruhinya.</li>
+          <li>Menentukan frekuensi pada <b>Dawai & Pipa Organa</b>.</li>
+          <li>Menghitung perubahan frekuensi melalui <b>Efek Doppler</b>.</li>
+          <li>Menerapkan <b>Computational Thinking</b> untuk memodelkan fenomena fisika dalam kode komputer.</li>
+        </ul>
+      </div>
+      <div style="text-align: center;">
+        
+        <p style="font-size: 14px; color: #64748b;">(Ilustrasi Rambatan Gelombang Bunyi)</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <h2>🎸 Sumber Bunyi: Dawai (Hukum Melde)</h2>
+    <div class="grid-2">
+      <div class="theory-box">
+        <p>Frekuensi nada pada dawai dipengaruhi oleh panjang (L), tegangan (F), dan massa jenis (μ).</p>
+        
+        <div class="formula">f<sub>n</sub> = (n+1)v / 2L</div>
+      </div>
+      <div class="example-box">
+        <b>📝 Contoh Soal:</b>
+        <p>Dawai gitar sepanjang 80 cm memiliki cepat rambat gelombang 400 m/s. Hitunglah frekuensi nada dasar (f<sub>0</sub>) dan nada atas pertama (f<sub>1</sub>)!</p>
+        <hr>
+        <b>Penyelesaian:</b>
+        <ul>
+          <li><b>Nada Dasar (n=0):</b><br> f<sub>0</sub> = (0+1) . 400 / (2 . 0,8) = <b>250 Hz</b></li>
+          <li><b>Nada Atas 1 (n=1):</b><br> f<sub>1</sub> = (1+1) . 400 / (2 . 0,8) = <b>500 Hz</b></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <h2>🚑 Efek Doppler</h2>
+    <div class="grid-2">
+      <div class="theory-box">
+        
+        <p>Fenomena perubahan frekuensi yang terdengar ketika sumber atau pendengar bergerak.</p>
+        <div class="formula">f<sub>p</sub> = (v ± v<sub>p</sub>) / (v ∓ v<sub>s</sub>) . f<sub>s</sub></div>
+      </div>
+      <div class="example-box">
+        <b>📝 Contoh Soal:</b>
+        <p>Ambulans membunyikan sirine 600 Hz sambil bergerak mendekati pendengar diam dengan v<sub>s</sub> = 30 m/s. Jika v<sub>udara</sub> = 330 m/s, berapakah f<sub>p</sub>?</p>
+        <hr>
+        <b>Penyelesaian:</b>
+        <p>f<sub>p</sub> = (330 / (330 - 30)) . 600<br> f<sub>p</sub> = (330 / 300) . 600 = <b>660 Hz</b></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <h2>💻 Integrasi Coding dalam Fisika</h2>
+    <div class="grid-2">
+      <div class="theory-box">
+        <p><b>Apa itu Coding?</b> Coding adalah cara kita memberikan instruksi kepada komputer untuk memecahkan masalah melalui logika matematika.</p>
+        <p><b>Variabel Utama:</b></p>
+        <ul>
+          <li><code>v</code> : Velocity (kecepatan rambat)</li>
+          <li><code>fs</code> : Source Frequency (frekuensi sumber)</li>
+          <li><code>fp</code> : Perceived Frequency (frekuensi pendengar)</li>
+        </ul>
+      </div>
+      <div class="theory-box" style="border-color: var(--accent);">
+        <p><b>Metode CT (Computational Thinking):</b></p>
+        <ol>
+          <li><b>Dekomposisi:</b> Membagi rumus Doppler menjadi variabel input dan satu rumus output.</li>
+          <li><b>Pengenalan Pola:</b> Jika sumber mendekat, maka penyebut rumus menjadi (v - vs).</li>
+          <li><b>Algoritma:</b> Menyusun langkah: Input Data → Hitung Rumus → Tampilkan Hasil.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <h2>🚀 Live Code Simulator</h2>
+    <p>Cobalah ubah nilai <code>vs</code> (kecepatan ambulans) di bawah ini, lalu klik jalankan untuk mendengar perbedaannya!</p>
+    
+    <div id="editor-container">
+      <textarea id="code-input" spellcheck="false">
+// --- DATA INPUT ---
+let v = 340;   // Kecepatan udara
+let vs = 80;   // Kecepatan Ambulans (Coba ganti angka ini!)
+let fs = 440;  // Frekuensi Sirine (Nada A)
+
+// --- ALGORITMA ---
+// Menghitung frekuensi yang didengar (mendekat)
+let fp = (v / (v - vs)) * fs;
+
+// --- OUTPUT SIMULASI ---
+renderSimulasi(vs, fp);
+playTone(fp);</textarea>
+
+      <div id="simulation-output">
+        <div class="listener">🧍</div>
+        <div id="amb-icon" class="ambulance">🚑</div>
+        <div id="wave-visual" class="sound-wave"></div>
+        <div id="data-display" style="position:absolute; top:10px; left:20px; font-weight:bold; color:var(--primary); background: rgba(255,255,255,0.9); padding: 8px; border-radius: 5px;">
+          FP: --- Hz
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 20px; display: flex; gap: 15px;">
+      <button class="btn-run" onclick="runCode()">▶ Jalankan & Dengar</button>
+      <button class="btn-stop" onclick="stopAudio()">⏹ Stop Suara</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let currentIdx = 0;
+  const slides = document.querySelectorAll('.slide');
+  const progressBar = document.getElementById('progressBar');
+  
+  // Audio Engine
+  let audioCtx, oscillator, gainNode;
+
+  function moveSlide(step) {
+    if (currentIdx + step >= 0 && currentIdx + step < slides.length) {
+      stopAudio();
+      slides[currentIdx].classList.remove('active');
+      currentIdx += step;
+      slides[currentIdx].classList.add('active');
+      progressBar.style.width = ((currentIdx + 1) / slides.length * 100) + '%';
+    }
+  }
+
+  function runCode() {
+    const code = document.getElementById('code-input').value;
+    try {
+      eval(code);
+    } catch (e) {
+      alert("Ada kesalahan pada kode: " + e.message);
+    }
+  }
+
+  function renderSimulasi(vs, fp) {
+    const amb = document.getElementById('amb-icon');
+    const wave = document.getElementById('wave-visual');
+    const display = document.getElementById('data-display');
+
+    // Reset Visual
+    amb.style.transition = 'none';
+    amb.style.left = '10px';
+    wave.style.animation = 'none';
+    wave.style.opacity = '0';
+
+    setTimeout(() => {
+      let duration = 150 / (vs || 1);
+      amb.style.transition = `left ${duration}s linear`;
+      amb.style.left = '70%';
+      
+      wave.style.left = '10%';
+      wave.style.opacity = '1';
+      wave.style.animation = `ripple ${300/fp}s infinite`;
+      
+      display.innerText = `FP: ${Math.round(fp)} Hz`;
+    }, 50);
+  }
+
+  function playTone(freq) {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    stopAudio();
+
+    oscillator = audioCtx.createOscillator();
+    gainNode = audioCtx.createGain();
+
+    oscillator.type = 'sawtooth'; // Suara sirine tajam
+    oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+    // Efek Wiu-Wiu (LFO)
+    const lfo = audioCtx.createOscillator();
+    const lfoGain = audioCtx.createGain();
+    lfo.frequency.value = 2; 
+    lfoGain.gain.value = freq * 0.05;
+    lfo.connect(lfoGain);
+    lfoGain.connect(oscillator.frequency);
+    lfo.start();
+
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.1);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 4);
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    oscillator.start();
+    oscillator.stop(audioCtx.currentTime + 4);
+  }
+
+  function stopAudio() {
+    if (oscillator) {
+      oscillator.stop();
+      oscillator = null;
+    }
+  }
+
+  progressBar.style.width = (1 / slides.length * 100) + '%';
+</script>
+
+</body>
+</html>
