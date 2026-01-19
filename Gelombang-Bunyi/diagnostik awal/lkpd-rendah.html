@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Jalur Dasar - PhiQu</title>
+    <link rel="icon" href="../foto/logo.png" type="image/png">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #4d7c2c;
+            --primary-light: #ecfdf5;
+            --bg: #f1f5f9;
+            --text: #1e293b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            border-top: 10px solid var(--primary);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header img { width: 80px; }
+
+        .identity-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        .input-group { display: flex; flex-direction: column; gap: 5px; }
+        .input-group label { font-size: 11px; font-weight: 700; color: #64748b; }
+        .input-group input { padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; }
+
+        .misi-section {
+            background: var(--primary-light);
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        .misi-image {
+            width: 100%;
+            border-radius: 15px;
+            margin: 15px 0;
+            border: 2px solid white;
+        }
+
+        .task-card { margin-bottom: 25px; }
+        .task-card label { display: block; font-weight: 700; margin-bottom: 10px; color: var(--primary); }
+        
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        .btn-pdf {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 20px;
+            width: 100%;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-pdf:hover { background: #dc2626; transform: translateY(-3px); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="header">
+        <img id="logo-phiqu" src="../foto/logo.png" alt="PhiQu">
+        <div style="text-align: right">
+            <h1 style="margin:0; color: var(--primary)">LKPD PHIQU</h1>
+            <span style="color: #64748b">Jalur Dasar (Rendah)</span>
+        </div>
+    </header>
+
+    <div class="identity-card">
+        <div class="input-group">
+            <label>Nama Lengkap</label>
+            <input type="text" id="nama" placeholder="Nama Anda...">
+        </div>
+        <div class="input-group">
+            <label>Kelas</label>
+            <input type="text" id="kelas" placeholder="Contoh: XI-1">
+        </div>
+        <div class="input-group">
+            <label>Kelompok</label>
+            <input type="text" id="kelompok" placeholder="Nama Kelompok...">
+        </div>
+        <div class="input-group">
+            <label>Skor Awal</label>
+            <input type="text" id="skor-display" readonly>
+        </div>
+    </div>
+
+    <section class="misi-section">
+        <h3 style="margin-top:0">🔍 Misi: Misteri Telepon Kaleng</h3>
+        <p id="teks-soal-cerita">Budi dan Ani sedang melakukan percobaan telepon kaleng. Saat benang ditarik sangat <b>kencang</b>, suara bisikan terdengar jelas. Namun, ketika benang dibiarkan <b>kendur</b>, suara tiba-tiba menghilang. Bantulah mereka menganalisis mengapa getaran pada benang sangat penting bagi perambatan bunyi!</p>
+        
+        
+        <img id="img-misi" src="../foto/telepon-kaleng.png" class="misi-image" alt="Ilustrasi">
+    </section>
+
+    <div class="task-card">
+        <label id="q1-text">1. [Dekomposisi] Sebutkan 3 komponen utama dalam alat ini yang bertugas menangkap, menghantar, dan mengeluarkan bunyi!</label>
+        <textarea id="ans1" placeholder="Jawaban..."></textarea>
+    </div>
+
+    <div class="task-card">
+        <label id="q2-text">2. [Pola] Apa perbedaan fisik yang terjadi pada benang saat suara merambat dengan baik dibandingkan saat tidak terdengar?</label>
+        <textarea id="ans2" placeholder="Jawaban..."></textarea>
+    </div>
+
+    <div class="task-card">
+        <label id="q3-text">3. [Algoritma] Tuliskan instruksi singkat (langkah demi langkah) agar telepon kaleng ini bisa digunakan dengan benar!</label>
+        <textarea id="ans3" placeholder="Jawaban..."></textarea>
+    </div>
+
+    <button class="btn-pdf" onclick="generateProPDF()">💾 Simpan Hasil Ke PDF</button>
+</div>
+
+<script>
+    window.onload = function() {
+        const data = JSON.parse(sessionStorage.getItem('skorPhiQu'));
+        if (data) document.getElementById('skor-display').value = data.total + " Poin";
+    };
+
+    function generateProPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const data = JSON.parse(sessionStorage.getItem('skorPhiQu'));
+        const nama = document.getElementById('nama').value || "Siswa";
+
+        // --- 1. HEADER & LOGO ---
+        const logo = document.getElementById('logo-phiqu');
+        doc.addImage(logo, 'PNG', 15, 10, 15, 15);
+        
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.setTextColor(77, 124, 44);
+        doc.text("LAPORAN PRAKTIKUM PHIQU", 35, 20);
+
+        // --- 2. IDENTITAS ---
+        doc.setDrawColor(200);
+        doc.line(15, 30, 195, 30);
+        doc.setFontSize(10);
+        doc.setTextColor(0);
+        doc.text(`Nama: ${nama}`, 15, 38);
+        doc.text(`Kelas: ${document.getElementById('kelas').value}`, 15, 43);
+        doc.text(`Skor Diagnostik: ${data.total} Poin`, 150, 38);
+
+        // --- 3. SOAL CERITA ---
+        doc.setFont("helvetica", "bold");
+        doc.text("MISI / SOAL CERITA:", 15, 55);
+        doc.setFont("helvetica", "normal");
+        const soalCerita = document.getElementById('teks-soal-cerita').innerText;
+        const splitSoal = doc.splitTextToSize(soalCerita, 180);
+        doc.text(splitSoal, 15, 60);
+
+        // --- 4. GAMBAR MISI ---
+        const imgMisi = document.getElementById('img-misi');
+        try {
+            doc.addImage(imgMisi, 'PNG', 15, 75, 180, 50);
+        } catch(e) { doc.text("[Gambar Ilustrasi]", 15, 80); }
+
+        // --- 5. TUGAS & JAWABAN ---
+        let yPos = 135;
+        const listTugas = [
+            { t: document.getElementById('q1-text').innerText, a: document.getElementById('ans1').value },
+            { t: document.getElementById('q2-text').innerText, a: document.getElementById('ans2').value },
+            { t: document.getElementById('q3-text').innerText, a: document.getElementById('ans3').value }
+        ];
+
+        listTugas.forEach((item) => {
+            // Cek sisa ruang di halaman
+            if (yPos > 250) { doc.addPage(); yPos = 20; }
+
+            // Teks Soal
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(77, 124, 44);
+            const sTugas = doc.splitTextToSize(item.t, 180);
+            doc.text(sTugas, 15, yPos);
+            yPos += (sTugas.length * 6);
+
+            // Teks Jawaban
+            doc.setFont("helvetica", "normal");
+            doc.setTextColor(0);
+            const sJawab = doc.splitTextToSize(item.a || "Tidak dijawab", 175);
+            doc.text(sJawab, 20, yPos);
+            yPos += (sJawab.length * 6) + 12;
+        });
+
+        // --- 6. FOOTER ---
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        doc.text(`Dihasilkan oleh PhiQu App - ${new Date().toLocaleString()}`, 15, 285);
+
+        doc.save(`Laporan_PhiQu_Dasar_${nama}.pdf`);
+    }
+</script>
+
+</body>
+</html>

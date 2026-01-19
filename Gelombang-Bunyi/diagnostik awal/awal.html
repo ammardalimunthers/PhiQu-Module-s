@@ -126,54 +126,61 @@
     }
 
     function calculateResult() {
-        clearInterval(timerInterval);
-        let scores = { dekomposisi: 0, pola: 0, abstraksi: 0, algoritma: 0, total: 0 };
-        let counts = { dekomposisi: 3, pola: 3, abstraksi: 2, algoritma: 2 };
+    clearInterval(timerInterval);
+    let scores = { dekomposisi: 0, pola: 0, abstraksi: 0, algoritma: 0, total: 0 };
+    let counts = { dekomposisi: 3, pola: 3, abstraksi: 2, algoritma: 2 };
 
-        questions.forEach((item, index) => {
-            const selected = document.querySelector(`input[name="q${index}"]:checked`);
-            if (selected && parseInt(selected.value) === item.ans) {
-                scores[item.cat]++;
-                scores.total++;
-            }
-        });
-
-        // HITUNG NILAI AKHIR (Jawaban + Bonus Waktu)
-        // Nilai maksimal jawaban = 100. Bonus waktu = sisa detik / 10 (maks 30 poin)
-        let baseScore = scores.total * 10;
-        let timeBonus = Math.floor(timeLeft / 250); 
-        let finalScore = baseScore + timeBonus;
-
-        document.getElementById('quiz-form').style.display = 'none';
-        document.getElementById('result-area').style.display = 'block';
-        document.querySelector('.timer-bar').style.display = 'none';
-
-        // Penentuan Kelompok & LKPD
-        let level = "";
-        let targetFile = "";
-        if (finalScore >= 80) {
-            level = "Kelompok Tinggi (Mahir)";
-            targetFile = "lkpd-tinggi.html";
-        } else if (finalScore >= 50) {
-            level = "Kelompok Sedang (Cakap)";
-            targetFile = "lkpd-sedang.html";
-        } else {
-            level = "Kelompok Rendah (Dasar)";
-            targetFile = "lkpd-rendah.html";
+    questions.forEach((item, index) => {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+        if (selected && parseInt(selected.value) === item.ans) {
+            scores[item.cat]++;
+            scores.total++;
         }
+    });
 
-        document.getElementById('total-score').innerText = `Skor Akhir: ${finalScore}`;
-        document.getElementById('rekomendasi-teks').innerText = `Kamu masuk ke ${level}`;
-        document.getElementById('btn-next').onclick = () => window.location.href = targetFile;
+    let baseScore = scores.total * 10;
+    let timeBonus = Math.floor(timeLeft / 10); 
+    let finalScore = baseScore + timeBonus;
 
-        // Tampilkan indikator CT
-        document.getElementById('sc-dekomposisi').innerText = Math.round((scores.dekomposisi / counts.dekomposisi) * 100) + "%";
-        document.getElementById('sc-pola').innerText = Math.round((scores.pola / counts.pola) * 100) + "%";
-        document.getElementById('sc-abstraksi').innerText = Math.round((scores.abstraksi / counts.abstraksi) * 100) + "%";
-        document.getElementById('sc-algoritma').innerText = Math.round((scores.algoritma / counts.algoritma) * 100) + "%";
-        
-        window.scrollTo(0, 0);
+    // --- PERUBAHAN DI SINI: Menggunakan sessionStorage ---
+    const storageData = {
+        total: finalScore,
+        dekomposisi: Math.round((scores.dekomposisi / counts.dekomposisi) * 100),
+        pola: Math.round((scores.pola / counts.pola) * 100),
+        abstraksi: Math.round((scores.abstraksi / counts.abstraksi) * 100),
+        algoritma: Math.round((scores.algoritma / counts.algoritma) * 100)
+    };
+    sessionStorage.setItem('skorPhiQu', JSON.stringify(storageData));
+    // ---------------------------------------------------
+
+    document.getElementById('quiz-form').style.display = 'none';
+    document.getElementById('result-area').style.display = 'block';
+    document.querySelector('.timer-bar').style.display = 'none';
+
+    let level = "";
+    let targetFile = "";
+    if (finalScore >= 80) {
+        level = "KELOMPOK TINGGI (MAHIR)";
+        targetFile = "lkpd-tinggi.html";
+    } else if (finalScore >= 50) {
+        level = "KELOMPOK SEDANG (CAKAP)";
+        targetFile = "lkpd-sedang.html";
+    } else {
+        level = "KELOMPOK RENDAH (DASAR)";
+        targetFile = "lkpd-rendah.html";
     }
+
+    document.getElementById('total-score').innerText = `Skor Akhir: ${finalScore}`;
+    document.getElementById('rekomendasi-teks').innerText = level;
+    document.getElementById('btn-next').onclick = () => window.location.href = targetFile;
+
+    document.getElementById('sc-dekomposisi').innerText = storageData.dekomposisi + "%";
+    document.getElementById('sc-pola').innerText = storageData.pola + "%";
+    document.getElementById('sc-abstraksi').innerText = storageData.abstraksi + "%";
+    document.getElementById('sc-algoritma').innerText = storageData.algoritma + "%";
+    
+    window.scrollTo(0, 0);
+}
 
     window.onload = loadQuiz;
 </script>
