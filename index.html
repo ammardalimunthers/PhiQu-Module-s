@@ -3,414 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PhiQu Module's</title>
-    <link rel="icon" href="./Gelombang-Bunyi/foto/logo.png" type="image/png">
-    <link rel="apple-touch-icon" href="./Gelombang-Bunyi/foto/logo.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+    <title>Master Lab Akustik SMA - Computational Thinking</title>
     <style>
-        :root {
-            --accent: #ffd700;
-            --bg-dark: #0f172a;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --card-border: rgba(255, 255, 255, 0.1);
-            --text-main: #f8fafc;
-            --text-dim: #94a3b8;
-        }
+        :root { --main: #2563eb; --accent: #10b981; --dark: #1e293b; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .app-container { background: white; max-width: 900px; width: 100%; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 25px; }
+        
+        /* Visual Display */
+        .screen { background: #0f172a; border-radius: 12px; padding: 15px; margin-bottom: 20px; text-align: center; color: white; border: 4px solid #334155; }
+        canvas { width: 100%; height: 150px; }
+        
+        .stage { display: flex; justify-content: space-around; align-items: center; padding: 20px; border: 2px dashed #cbd5e1; border-radius: 12px; margin-bottom: 20px; }
+        .device { font-size: 60px; transition: transform 0.1s; }
+        
+        /* Controls */
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .control-item { display: flex; flex-direction: column; }
+        label { font-weight: bold; font-size: 14px; margin-bottom: 8px; color: #475569; }
+        
+        /* Drag n Drop */
+        .inventory { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .item { padding: 8px 15px; background: var(--main); color: white; border-radius: 20px; cursor: grab; font-size: 13px; }
+        .drop-zone { width: 150px; height: 100px; border: 3px dotted #94a3b8; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 12px; background: #f8fafc; }
 
-        /* --- Global Reset --- */
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding-bottom: 50px;
-        }
+        /* Audio Button */
+        #audioBtn { width: 100%; padding: 15px; border: none; border-radius: 8px; background: var(--accent); color: white; font-weight: bold; cursor: pointer; margin-bottom: 15px; font-size: 16px; }
+        #audioBtn.active { background: #ef4444; }
 
-        /* --- Header Section --- */
-        header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            padding: 50px 20px;
-            animation: fadeInDown 0.8s ease;
-        }
-
-        @media (min-width: 480px) {
-            header { flex-direction: row; gap: 20px; }
-        }
-
-        .logo-container {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .logo {
-            width: 65px;
-            height: auto;
-            z-index: 2;
-            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .logo-glow {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            background: var(--accent);
-            filter: blur(25px);
-            border-radius: 50%;
-            opacity: 0.4;
-            animation: pulse 3s ease-in-out infinite;
-        }
-
-        /* --- Action Bar (Top Right) --- */
-.action-bar {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    display: flex;
-    gap: 12px;
-    z-index: 1000;
-}
-
-.btn-action {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    color: var(--text-main);
-    padding: 5px 5px;
-    border-radius: 14px;
-    text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 600;
-    backdrop-filter: blur(10px);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-}
-
-.btn-action:hover {
-    background: rgba(3, 40, 248, 0.15);
-    border-color: var(--accent);
-    color: var(--accent);
-    transform: translateY(-3px);
-}
-
-.btn-download {
-    background: linear-gradient(135deg, var(--accent) 0%, #fbbf24 100%);
-    color: #000;
-    border: none;
-}
-
-.btn-download:hover {
-    color: #000;
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
-}
-
-/* --- Quick Info Footer --- */
-.info-footer {
-    margin-top: 40px;
-    display: flex;
-    gap: 20px;
-    animation: fadeIn 1.5s ease;
-}
-
-.info-item {
-    text-align: center;
-    color: var(--text-dim);
-    font-size: 0.8rem;
-}
-
-.info-item i {
-    display: block;
-    font-size: 1.2rem;
-    color: var(--accent);
-    margin-bottom: 5px;
-}
-
-        h1 {
-            font-size: 2rem;
-            margin: 0;
-            font-weight: 700;
-            letter-spacing: -1px;
-            background: linear-gradient(to bottom, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* --- List & Grid Container --- */
-        .list-container {
-            width: 90%;
-            max-width: 850px; /* Ukuran maksimal diperlebar sedikit agar nyaman di desktop */
-        }
-
-        ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: grid;
-            grid-template-columns: 1fr; /* Default 1 kolom untuk mobile */
-            gap: 20px;
-        }
-
-        /* Responsif Tablet & Desktop: 2 Kolom */
-        @media (min-width: 640px) {
-            ul {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* --- Card Style --- */
-        li {
-            opacity: 0;
-            animation: slideIn 0.5s forwards;
-        }
-
-        /* Delay animasi tiap card */
-        li:nth-child(1) { animation-delay: 0.1s; }
-        li:nth-child(2) { animation-delay: 0.2s; }
-        li:nth-child(3) { animation-delay: 0.3s; }
-        li:nth-child(4) { animation-delay: 0.4s; }
-
-        a {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 100%;
-            padding: 28px;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            color: var(--text-main);
-            text-decoration: none;
-            backdrop-filter: blur(12px);
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            position: relative;
-            box-sizing: border-box; /* Memastikan padding tidak merusak lebar */
-        }
-
-        a:hover {
-            transform: translateY(-8px);
-            background: rgba(255, 255, 255, 0.08);
-            border-color: var(--accent);
-            box-shadow: 0 15px 35px -12px rgba(0, 0, 0, 0.6);
-        }
-
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: #fff;
-        }
-
-        .card-desc {
-            font-size: 0.9rem;
-            color: var(--text-dim);
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        .card-footer {
-            display: flex;
-            align-items: center;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            margin-top: auto; /* Mendorong footer ke bawah card */
-        }
-
-        .arrow {
-            margin-left: 10px;
-            transition: transform 0.3s ease;
-        }
-
-        a:hover .arrow {
-            transform: translateX(6px);
-        }
-
-        /* --- Animations --- */
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.3; }
-            50% { transform: scale(1.4); opacity: 0.5; }
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-                /* --- Splash Screen Styles --- */
-        #splash-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-dark);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999; /* Pastikan di atas segalanya */
-            transition: opacity 0.8s ease, visibility 0.8s;
-        }
-
-        .splash-content {
-            text-align: center;
-            animation: fadeIn 1s ease-out;
-        }
-
-        .splash-logo {
-            width: 120px;
-            height: auto;
-            margin-bottom: 20px;
-            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
-            animation: pulse 2s infinite ease-in-out;
-        }
-
-        .splash-text {
-            font-size: 2.5rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            background: linear-gradient(to right, #fff, var(--accent));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 0;
-        }
-
-        /* Class untuk menghilangkan splash */
-        .fade-out {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
+        .data-panel { background: #f8fafc; border-radius: 8px; padding: 15px; font-size: 14px; border-left: 5px solid var(--main); }
+        .highlight { color: var(--main); font-weight: bold; }
     </style>
 </head>
 <body>
-    <div id="splash-screen">
-        <div class="splash-content">
-            <img src="./Gelombang-Bunyi/foto/logo.png" alt="Logo" class="splash-logo">
-            <h2 class="splash-text">PhiQu Module's</h2>
+
+<div class="app-container">
+    <h2 style="text-align:center; color: var(--dark);">🔬 Lab Akustik Digital (Level SMA)</h2>
+    
+    <button id="audioBtn">▶ AKTIFKAN AUDIO EKSPERIMEN</button>
+
+    <div class="screen">
+        <canvas id="waveCanvas"></canvas>
+        <div style="font-size: 12px; margin-top: 5px; color: #94a3b8;">Oscilloscope Visualizer</div>
+    </div>
+
+    <div class="stage">
+        <div id="dropZone" class="drop-zone">Tarik Material Ke Sini (Absorpsi)</div>
+        <div class="device" id="phone">📱</div>
+    </div>
+
+    <div class="inventory">
+        <div class="item" draggable="true" id="busa" data-alpha="0.2">Busa Akustik (α=0.8)</div>
+        <div class="item" draggable="true" id="kayu" data-alpha="0.7">Papan Kayu (α=0.3)</div>
+        <div class="item" draggable="true" id="harga" data-alpha="1">Harga HP (Abstraksi)</div>
+    </div>
+
+    <div class="controls">
+        <div class="control-item">
+            <label>Frekuensi ($f$): <span class="highlight" id="fVal">440</span> Hz</label>
+            <input type="range" id="fSlider" min="100" max="1200" value="440">
+        </div>
+        <div class="control-item">
+            <label>Kecepatan Sumber ($v_s$): <span class="highlight" id="vVal">0</span> m/s</label>
+            <input type="range" id="vSlider" min="0" max="150" value="0">
         </div>
     </div>
 
-    <header>
-        <div class="logo-container">
-            <div class="logo-glow"></div>
-            <img src="./Gelombang-Bunyi/foto/logo.png" alt="Logo" class="logo">
-        </div>
-        <h1>PhiQu Module's</h1>
-
-        <div class="action-bar">
-            <a href="./dist/PhiQu Module Setup 1.0.0.exe" class="btn-action btn-download">
-                <i class="fas fa-download"></i> Download EXE
-            </a>
-        </div>
-
-    </header>
-
-    <div class="list-container">
-        <ul>
-            <li>
-                <a href="./Gelombang-Bunyi/index.html">
-                    <div>
-                        <div class="card-title">Gelombang Bunyi</div>
-                        <div class="card-desc">Pelajari konsep dasar, frekuensi, dan resonansi bunyi secara mendalam melalui modul interaktif.</div>
-                    </div>
-                    <div class="card-footer">
-                        Buka Modul <span class="arrow">➜</span>
-                    </div>
-                </a>
-            </li>
-
-            <li>
-                <a href="#">
-                    <div>
-                        <div class="card-title">Vektor</div>
-                        <div class="card-desc">Eksplorasi perhitungan vektor.</div>
-                    </div>
-                    <div class="card-footer">
-                        Segera Hadir <span class="arrow">➜</span>
-                    </div>
-                </a>
-            </li>
-
-            <li>
-                <a href="#">
-                    <div>
-                        <div class="card-title">Termodinamika</div>
-                        <div class="card-desc">Memahami hukum energi, kalor, dan perubahan suhu dalam berbagai sistem fisik.</div>
-                    </div>
-                    <div class="card-footer">
-                        Segera Hadir <span class="arrow">➜</span>
-                    </div>
-                </a>
-            </li>
-
-            <li>
-                <a href="#">
-                    <div>
-                        <div class="card-title">Listrik Statis</div>
-                        <div class="card-desc">Analisis muatan listrik, gaya Coulomb, dan fenomena medan listrik di kehidupan sehari-hari.</div>
-                    </div>
-                    <div class="card-footer">
-                        Segera Hadir <span class="arrow">➜</span>
-                    </div>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    <div class="info-footer">
-    <div class="info-item">
-        <i class="fas fa-shield-halved"></i>
-        <span>Belum Terverifikasi</span>
-    </div>
-    <div class="info-item">
-        <i class="fas fa-bolt"></i>
-        <span>Offline Mode</span>
-    </div>
-    <div class="info-item">
-        <i class="fas fa-graduation-cap"></i>
-        <span>Kurikulum</span>
+    <div class="data-panel">
+        <strong>Analisis Data Fisika:</strong><br>
+        • Taraf Intensitas Terdeteksi: <span class="highlight" id="dbRes">60.0</span> dB<br>
+        • Frekuensi Doppler ($f_p$): <span class="highlight" id="dopplerRes">440</span> Hz<br>
+        • Status: <span id="status">Normal</span>
     </div>
 </div>
 
-</body>
 <script>
-    window.addEventListener('load', () => {
-        const splash = document.getElementById('splash-screen');
+    // Audio API Setup
+    let audioCtx, oscillator, gainNode;
+    let isPlaying = false;
+
+    // Canvas Setup
+    const canvas = document.getElementById('waveCanvas');
+    const ctx = canvas.getContext('2d');
+    let animationId;
+
+    // Variables
+    let alpha = 1; 
+    const v_sound = 340;
+
+    const audioBtn = document.getElementById('audioBtn');
+    const fSlider = document.getElementById('fSlider');
+    const vSlider = document.getElementById('vSlider');
+
+    // 1. Fungsi Inisialisasi Audio
+    function initAudio() {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        oscillator = audioCtx.createOscillator();
+        gainNode = audioCtx.createGain();
+
+        oscillator.type = 'sine';
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
         
-        // Atur waktu tunggu (misal: 2500ms = 2.5 detik)
-        setTimeout(() => {
-            splash.classList.add('fade-out');
-        }, 2500);
+        oscillator.start();
+        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    }
+
+    // 2. Fungsi Utama Update Eksperimen
+    function updateAll() {
+        const fs = parseFloat(fSlider.value);
+        const vs = parseFloat(vSlider.value);
+        
+        // Algoritma Efek Doppler (Mendekat)
+        let fp = fs * (v_sound / (v_sound - vs));
+        
+        // Taraf Intensitas (Simulasi Sederhana berbasis absorpsi alpha)
+        let ti = 60 * alpha;
+
+        // Update UI
+        document.getElementById('fVal').innerText = fs;
+        document.getElementById('vVal').innerText = vs;
+        document.getElementById('dopplerRes').innerText = fp.toFixed(1);
+        document.getElementById('dbRes').innerText = ti.toFixed(1);
+
+        // Update Suara Real-time
+        if (isPlaying && audioCtx) {
+            oscillator.frequency.setTargetAtTime(fp, audioCtx.currentTime, 0.05);
+            gainNode.gain.setTargetAtTime(alpha * 0.2, audioCtx.currentTime, 0.05);
+        }
+
+        // Animasi HP Bergetar jika kecepatan tinggi
+        document.getElementById('phone').style.transform = `scale(${1 + vs/500})`;
+    }
+
+    // 3. Visualisasi Oscilloscope
+    let offset = 0;
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+        ctx.strokeStyle = '#22d3ee';
+        ctx.lineWidth = 3;
+
+        const freq = parseFloat(fSlider.value);
+        const vs = parseFloat(vSlider.value);
+        const fp = freq * (v_sound / (v_sound - vs));
+
+        for (let x = 0; x < canvas.width; x++) {
+            const y = (canvas.height / 2) + (30 * alpha) * Math.sin((x + offset) * (fp / 500));
+            ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        offset += (fp / 100); 
+        animationId = requestAnimationFrame(animate);
+    }
+
+    // Event Listeners
+    audioBtn.addEventListener('click', () => {
+        if (!isPlaying) {
+            if (!audioCtx) initAudio();
+            gainNode.gain.setTargetAtTime(0.2, audioCtx.currentTime, 0.1);
+            audioBtn.innerText = "■ MATIKAN AUDIO";
+            audioBtn.classList.add('active');
+            isPlaying = true;
+        } else {
+            gainNode.gain.setTargetAtTime(0, audioCtx.currentTime, 0.1);
+            audioBtn.innerText = "▶ AKTIFKAN AUDIO EKSPERIMEN";
+            audioBtn.classList.remove('active');
+            isPlaying = false;
+        }
     });
+
+    // Drag and Drop Logic
+    document.querySelectorAll('.item').forEach(item => {
+        item.ondragstart = (e) => e.dataTransfer.setData("id", e.target.id);
+    });
+
+    const dropZone = document.getElementById('dropZone');
+    dropZone.ondragover = (e) => e.preventDefault();
+    dropZone.ondrop = (e) => {
+        const id = e.dataTransfer.getData("id");
+        const el = document.getElementById(id);
+        alpha = parseFloat(el.getAttribute('data-alpha'));
+        dropZone.innerText = "Media: " + el.innerText;
+        document.getElementById('status').innerText = alpha < 1 ? "Terjadi Redaman Energi" : "Variabel Abstraksi (Diabaikan)";
+        updateAll();
+    };
+
+    fSlider.oninput = updateAll;
+    vSlider.oninput = updateAll;
+
+    updateAll();
+    animate();
 </script>
+
+</body>
 </html>
