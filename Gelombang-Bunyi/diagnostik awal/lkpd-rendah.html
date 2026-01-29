@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Jalur Dasar - PhiQu</title>
+    <link rel="icon" href="../foto/logo.png" type="image/png">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #4d7c2c;
+            --primary-light: #ecfdf5;
+            --bg: #f1f5f9;
+            --text: #1e293b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            border-top: 10px solid var(--primary);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header img { width: 80px; }
+
+        .identity-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        .input-group { display: flex; flex-direction: column; gap: 5px; }
+        .input-group label { font-size: 11px; font-weight: 700; color: #64748b; }
+        .input-group input { padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; }
+
+        .misi-section {
+            background: var(--primary-light);
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        .misi-image {
+            width: 100%;
+            border-radius: 15px;
+            margin: 15px 0;
+            border: 2px solid white;
+        }
+
+        .task-card { margin-bottom: 25px; }
+        .task-card label { display: block; font-weight: 700; margin-bottom: 10px; color: var(--primary); }
+        
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        .btn-pdf {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 20px;
+            width: 100%;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-pdf:hover { background: #dc2626; transform: translateY(-3px); }
+
+        .ct-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .ct-card { background: #f8fafc; padding: 15px; border-radius: 10px; border-left: 5px solid #fbbf24; text-align: left; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="header">
+        <img id="logo-phiqu" src="../foto/logo.png" alt="PhiQu">
+        <div style="text-align: right">
+            <h1 style="margin:0; color: var(--primary)">LKPD PHIQU</h1>
+            <span style="color: #64748b">Jalur Dasar (Rendah)</span>
+        </div>
+    </header>
+
+    <div class="identity-card">
+        <div class="input-group">
+            <label>Nama Lengkap</label>
+            <input type="text" id="nama" placeholder="Nama Anda...">
+        </div>
+        <div class="input-group">
+            <label>Kelas</label>
+            <input type="text" id="kelas" placeholder="Contoh: XI-1">
+        </div>
+        <div class="input-group">
+            <label>Kelompok</label>
+            <input type="text" id="kelompok" placeholder="Nama Kelompok...">
+        </div>
+        <div class="input-group">
+            <label>Skor Awal</label>
+            <input type="text" id="skor-display" readonly>
+        </div>
+    </div>
+
+    <div class="ct-grid">
+        <div class="ct-card"><h4>Dekomposisi</h4><p id="sc-dekomposisi">0%</p></div>
+        <div class="ct-card"><h4>Pengenalan Pola</h4><p id="sc-pola">0%</p></div>
+        <div class="ct-card"><h4>Abstraksi</h4><p id="sc-abstraksi">0%</p></div>
+        <div class="ct-card"><h4>Algoritma</h4><p id="sc-algoritma">0%</p></div>
+    </div>
+
+    <section class="misi-section">
+        <h3 style="margin-top:0">🔍 Misi: Misteri Telepon Kaleng</h3>
+        <p id="teks-soal-cerita">Budi dan Ani sedang melakukan percobaan telepon kaleng. Saat benang ditarik sangat <b>kencang</b>, suara bisikan terdengar jelas. Namun, ketika benang dibiarkan <b>kendur</b>, suara tiba-tiba menghilang. Bantulah mereka menganalisis mengapa getaran pada benang sangat penting bagi perambatan bunyi!</p>
+        
+        
+        <img id="img-misi" src="../foto/telepon-kaleng.png" class="misi-image" alt="Ilustrasi">
+    </section>
+
+    <div class="task-card">
+        <label id="q1-text">1. [Dekomposisi] Sebutkan 3 komponen utama dalam alat ini yang bertugas menangkap, menghantar, dan mengeluarkan bunyi!</label>
+        <textarea id="ans1" placeholder="Jawaban..."></textarea>
+    </div>
+
+    <div class="task-card">
+        <label id="q2-text">2. [Pola] Apa perbedaan fisik yang terjadi pada benang saat suara merambat dengan baik dibandingkan saat tidak terdengar?</label>
+        <textarea id="ans2" placeholder="Jawaban..."></textarea>
+    </div>
+
+    <div class="task-card">
+        <label id="q3-text">3. [Algoritma] Tuliskan instruksi singkat (langkah demi langkah) agar telepon kaleng ini bisa digunakan dengan benar!</label>
+        <textarea id="ans3" placeholder="Jawaban..."></textarea>
+    </div>
+
+    <div class="task-card">
+        <label id="q4-text">4. [Abstraksi] Mengapa getaran pada benang bisa menghantarkan bunyi meskipun tidak ada udara di dalamnya? Fokus pada konsep energi dan getaran!</label>
+        <textarea id="ans4" placeholder="Jawaban..."></textarea>
+    </div>
+
+    <button class="btn-pdf" onclick="generateProPDF()">💾 Simpan Hasil Ke PDF</button>
+</div>
+
+<script>
+    window.onload = function() {
+    // Mengambil data dari sessionStorage
+    const data = JSON.parse(sessionStorage.getItem('skorPhiQu'));
+    if (data) {
+        // Mengisi identitas skor
+        document.getElementById('skor-display').value = (data.total || 0) + " Poin";
+        
+        // Mengisi Grid Skor CT di layar (pastikan nama properti sesuai dengan yang disimpan)
+        document.getElementById('sc-dekomposisi').innerText = (data.dekomposisi || 0) + "%";
+        document.getElementById('sc-pola').innerText = (data.pola || 0) + "%";
+        document.getElementById('sc-abstraksi').innerText = (data.abstraksi || 0) + "%";
+        document.getElementById('sc-algoritma').innerText = (data.algoritma || 0) + "%";
+    }
+    };
+
+    function generateProPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Ambil data terbaru
+        const data = JSON.parse(sessionStorage.getItem('skorPhiQu')) || { total: 0, dekomposisi: 0, pola: 0, abstraksi: 0, algoritma: 0 };
+        const nama = document.getElementById('nama').value || "Siswa";
+        const kelas = document.getElementById('kelas').value || "-";
+        const kelompok = document.getElementById('kelompok').value || "-";
+
+        // --- 1. HEADER & LOGO ---
+        const logo = document.getElementById('logo-phiqu');
+        // Menambahkan logo dengan penanganan error jika gambar gagal dimuat
+        try {
+            doc.addImage(logo, 'PNG', 15, 10, 18, 18);
+        } catch(e) {
+            doc.setFontSize(12);
+            doc.text("PhiQu", 15, 20);
+        }
+        
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(18);
+        doc.setTextColor(77, 124, 44);
+        doc.text("LKPD PHIQU", 40, 18);
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text("Jalur Dasar (Rendah) - Modul Gelombang Bunyi", 40, 24);
+
+        // --- 2. GARIS PEMBATAS ---
+        doc.setDrawColor(77, 124, 44);
+        doc.setLineWidth(1);
+        doc.line(15, 32, 195, 32);
+
+        // --- 3. IDENTITAS SISWA ---
+        doc.setFontSize(11);
+        doc.setTextColor(0);
+        doc.setFont("helvetica", "bold");
+        doc.text("IDENTITAS SISWA", 15, 42);
+        
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.text(`Nama       : ${nama}`, 15, 48);
+        doc.text(`Kelas      : ${kelas}`, 15, 53);
+        doc.text(`Kelompok   : ${kelompok}`, 15, 58);
+        doc.text(`Skor Awal  : ${data.total} Poin`, 130, 48);
+
+        // --- 4. NILAI PILAR CT (TABEL RINGKAS) ---
+        doc.setFillColor(248, 250, 252); // Abu-abu sangat muda
+        doc.rect(15, 65, 180, 25, 'F');
+        doc.setDrawColor(251, 191, 36); // Warna kuning aksen Anda
+        doc.setLineWidth(0.5);
+        doc.line(15, 65, 15, 90); // Garis aksen kiri
+        
+        doc.setFont("helvetica", "bold");
+        doc.text("HASIL DIAGNOSTIK COMPUTATIONAL THINKING:", 20, 72);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Dekomposisi: ${data.dekomposisi}%`, 20, 82);
+        doc.text(`Pengenalan Pola: ${data.pola}%`, 65, 82);
+        doc.text(`Abstraksi: ${data.abstraksi}%`, 115, 82);
+        doc.text(`Algoritma: ${data.algoritma}%`, 160, 82);
+
+        // --- 5. MISI / SOAL CERITA ---
+        doc.setFont("helvetica", "bold");
+        doc.text("MISI: Misteri Telepon Kaleng", 15, 102);
+        doc.setFont("helvetica", "normal");
+        const soalCerita = "Budi dan Ani sedang melakukan percobaan telepon kaleng. Saat benang ditarik sangat kencang, suara bisikan terdengar jelas. Namun, ketika benang dibiarkan kendur, suara tiba-tiba menghilang.";
+        const splitSoal = doc.splitTextToSize(soalCerita, 180);
+        doc.text(splitSoal, 15, 108);
+
+        // --- 6. GAMBAR MISI ---
+        const imgMisi = document.getElementById('img-misi');
+        try {
+            // Mengatur posisi gambar agar proporsional
+            doc.addImage(imgMisi, 'PNG', 15, 118, 180, 50);
+        } catch(e) { 
+            doc.text("[Ilustrasi Percobaan Telepon Kaleng]", 15, 125); 
+        }
+
+        // --- 7. TUGAS & JAWABAN ---
+        let yPos = 180;
+        const listTugas = [
+            { q: "1. [Dekomposisi] Komponen Utama:", a: document.getElementById('ans1').value },
+            { q: "2. [Pola] Perbedaan Fisik Benang:", a: document.getElementById('ans2').value },
+            { q: "3. [Algoritma] Instruksi Penggunaan:", a: document.getElementById('ans3').value },
+            { q: "4. [Abstraksi] Perambatan Bunyi Tanpa Udara:", a: document.getElementById('ans4').value }
+        ];
+
+        listTugas.forEach((item) => {
+            if (yPos > 260) { doc.addPage(); yPos = 20; }
+
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(77, 124, 44);
+            doc.text(item.q, 15, yPos);
+            yPos += 7;
+
+            doc.setFont("helvetica", "normal");
+            doc.setTextColor(0);
+            const sJawab = doc.splitTextToSize(item.a || "Tidak ada jawaban.", 175);
+            doc.text(sJawab, 20, yPos);
+            yPos += (sJawab.length * 6) + 8;
+        });
+
+        // --- 8. FOOTER ---
+        const pageHeight = doc.internal.pageSize.height;
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        doc.text(`Laporan Digital PhiQu - Jalur Dasar | Dicetak pada: ${new Date().toLocaleString()}`, 15, pageHeight - 10);
+
+        // Simpan file
+        doc.save(`LKPD_Dasar_${nama}_${new Date().getTime()}.pdf`);
+    }
+</script>
+
+</body>
+</html>
